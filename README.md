@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📊 Prisma Schema Analysis
 
-## Getting Started
+## This document provides a detailed analysis of the Prisma schema used in your project. It outlines the database design and relationships
 
-First, run the development server:
+## 🧱 Schema Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The schema is designed for a typical **e-commerce application** with the following entities:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- `User`: Stores authenticated users with role-based access.
+- `Product`: Represents items available for sale.
+- `Order`: Represents a customer's order.
+- `OrderItem`: Join table for products in an order.
+- `Payment`: Tracks payment for each order.
+- `Shipment`: Handles shipping details for each order.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🔗 Entity Relationships
 
-## Learn More
+### User ↔️ Order
 
-To learn more about Next.js, take a look at the following resources:
+- **One-to-Many**: One user can place multiple orders.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Order ↔️ OrderItem
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **One-to-Many**: One order contains multiple order items.
 
-## Deploy on Vercel
+### Product ↔️ OrderItem
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **One-to-Many**: One product can appear in many order items.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Order ↔️ Payment / Shipment
+
+- **One-to-One**: Each order has one payment and one shipment record.
+
+---
+
+## 🔐 Authentication Support
+
+- The `User` model includes a `clerkId` field to integrate with Clerk authentication.
+
+---
+
+## 📦 Models and Considerations
+
+### `User`
+
+- Includes roles: `ADMIN`, `FINANCE`, `WAREHOUSE`, `USER`.
+
+### `Product`
+
+- Tracks stock, active status, and is linked to multiple order items.
+- Optional `description` for flexible product entries.
+
+### `Order`
+
+- Stores the status, total cost, and timestamps.
+- Automatically updates `updatedAt` for tracking changes.
+- Has nullable `payment` and `shipment`, which are added after order creation.
+
+### `OrderItem`
+
+- Denormalizes price to store snapshot at purchase time.
+- Prevents price fluctuation issues post-order.
+
+### `Payment`
+
+- Enum for method and status to support multiple gateways.
+- `transactionId` allows integration with Stripe.
+
+### `Shipment`
+
+- Stores address, city, zip, and status tracking.
+- `shippedAt` and `deliveredAt` support logistics tracking.
+
+---
