@@ -9,6 +9,7 @@ import {
 } from '@clerk/nextjs';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
+import { TanStackQueryProvider } from '@/global/providers';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -45,7 +46,7 @@ export default function RootLayout({
               <UserButton />
             </SignedIn>
           </header>
-          {children}
+          <TanStackQueryProvider>{children}</TanStackQueryProvider>
         </body>
       </html>
     </ClerkProvider>
