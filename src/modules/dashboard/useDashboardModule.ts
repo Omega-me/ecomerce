@@ -1,5 +1,11 @@
+'use client';
+import { useProductsQuery, useUserInfoQuery } from '@/hooks';
+
 const useDashboardModule = () => {
-  return {};
+  const { data: user } = useUserInfoQuery();
+  const { data: products } = useProductsQuery();
+
+  return { user, products };
 };
 
 export default useDashboardModule;

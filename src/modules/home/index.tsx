@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import useHomeModule from './useHome';
+import useHomeModule from './useHomeModule';
 
 const HomeModule = () => {
   const {} = useHomeModule();
