@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  email       String    @unique
+  password    String    // Enkriptohet
+  role        Role      @default(USER)
+  createdAt   DateTime  @default(now())
+  orders      Order[]
+}
+
+enum Role {
+  ADMIN
+  FINANCE
+  WAREHOUSE
+  USER
+}
+
+model Product {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  price       Float
+  stock       Int
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id          Int        @id @default(autoincrement())
+  user        User       @relation(fields: [userId], references: [id])
+  userId      Int
+  status      OrderStatus @default(PENDING)
+  total       Float
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  payment     Payment?
+  shipment    Shipment?
+  orderItems  OrderItem[]
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PACKED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model OrderItem {
+  id         Int      @id @default(autoincrement())
+  order      Order    @relation(fields: [orderId], references: [id])
+  orderId    Int
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  Int
+  quantity   Int
+  price      Float    // Çmimi në kohën e porosisë
+}
+
+model Payment {
+  id          Int       @id @default(autoincrement())
+  order       Order     @relation(fields: [orderId], references: [id])
+  orderId     Int       @unique
+  method      PaymentMethod
+  amount      Float
+  status      PaymentStatus
+  transactionId String?
+  createdAt   DateTime  @default(now())
+}
+
+enum PaymentMethod {
+  PAYPAL
+  STRIPE
+  CREDIT_CARD
+}
+
+enum PaymentStatus {
+  INITIATED
+  COMPLETED
+  FAILED
+}
+
+model Shipment {
+  id          Int      @id @default(autoincrement())
+  order       Order    @relation(fields: [orderId], references: [id])
+  orderId     Int      @unique
+  address     String
+  city        String
+  zipCode     String
+  status      ShipmentStatus
+  shippedAt   DateTime?
+  deliveredAt DateTime?
+}
+
+enum ShipmentStatus {
+  PENDING
+  IN_TRANSIT
+  DELIVERED
+  RETURNED
+}
