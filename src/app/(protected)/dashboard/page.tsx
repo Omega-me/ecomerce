@@ -1,8 +1,7 @@
-import DashboardModule from '@/modules/dashboard';
-import React from 'react';
+import React from "react";
 
 const Page = async () => {
-  return <DashboardModule />;
+  return <div>dashboard</div>;
 };
 
 export default Page;
