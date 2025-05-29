@@ -1,30 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
-import {
-  MutateFunction,
-  MutationKey,
-  QueryKey,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { MutationKey, QueryKey, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-export const useMutationData = (
+export const useMutationData = <TData = unknown, TError = unknown, TVariables = void>(
   mutationKey: MutationKey,
-  mutationFn: MutateFunction<any, any>,
+  mutationFn: (variables: TVariables) => Promise<TData>,
   queryKey: QueryKey,
-  onSuccess?: (data: any) => void,
+  onSuccessFn?: (data: any) => void
 ) => {
   const client = useQueryClient();
-  const { mutate, isPending, variables } = useMutation({
+  const { mutate, isPending, variables } = useMutation<TData, TError, TVariables>({
     mutationKey,
     mutationFn,
-    onSuccess: data => {
-      if (onSuccess) onSuccess(data);
-      const headerTxt =
-        data?.status === 200 || data?.status === 201 ? 'Success' : 'Error';
+    onSuccess: (data) => {
+      if (onSuccessFn) onSuccessFn(data);
+      const mutationData = data as unknown as { status: number; data: TData };
+      const headerTxt = mutationData?.status === 200 || mutationData?.status === 201 ? 'Success' : 'Error';
       return toast(headerTxt, {
-        description: data?.data,
+        description: mutationData?.data as string,
       });
     },
     onSettled: async () => {

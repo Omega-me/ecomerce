@@ -1,5 +1,5 @@
 import Store from '@/components/global/store/Store';
 
-export default async function Home() {
+export default function Home() {
   return <Store />;
 }

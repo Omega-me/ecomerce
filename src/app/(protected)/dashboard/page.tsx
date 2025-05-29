@@ -1,7 +1,5 @@
-import React from "react";
+import Dashboard from '@/components/global/dashboard/Dashboard';
 
-const Page = async () => {
-  return <div>dashboard</div>;
-};
-
-export default Page;
+export default function Page() {
+  return <Dashboard />;
+}

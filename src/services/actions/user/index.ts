@@ -1,5 +1,5 @@
 'use server';
-import { createUser, findUser } from '@/services/queries/user';
+import { createUser, findUser, getUsers } from '@/services/queries/user';
 import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 
@@ -15,6 +15,17 @@ export const onUserInfo = async () => {
     const profile = await findUser(user.id);
     if (!profile) return { status: 404 };
     return { status: 200, data: profile };
+  } catch (error) {
+    console.error('Error:', error);
+    return { status: 500 };
+  }
+};
+
+export const onGetUsers = async () => {
+  await onCurrentUser();
+  try {
+    const users = await getUsers();
+    return { status: 200, data: users };
   } catch (error) {
     console.error('Error:', error);
     return { status: 500 };

@@ -22,6 +22,8 @@ model User {
   role      Role     @default(USER)
   createdAt DateTime @default(now())
   orders    Order[]
+
+  OrderItem OrderItem[]
 }
 
 enum Role {
@@ -68,12 +70,15 @@ enum OrderStatus {
 
 model OrderItem {
   id        Int     @id @default(autoincrement())
-  order     Order   @relation(fields: [orderId], references: [id])
-  orderId   Int
+  order     Order?   @relation(fields: [orderId], references: [id])
+  orderId   Int?
   product   Product @relation(fields: [productId], references: [id])
   productId Int
   quantity  Int
   price     Float // Çmimi në kohën e porosisë
+  user       User        @relation(fields: [userId], references: [id])
+  userId     Int
+  createdAt     DateTime      @default(now())
 
   @@index([productId])
 }
@@ -93,6 +98,7 @@ model Payment {
 
 enum PaymentMethod {
   STRIPE
+  PAYPAL
 }
 
 enum PaymentStatus {
@@ -108,7 +114,7 @@ model Shipment {
   address     String
   city        String
   zipCode     String
-  status      ShipmentStatus
+  status      ShipmentStatus @default(PENDING)
   shippedAt   DateTime?
   deliveredAt DateTime?
 

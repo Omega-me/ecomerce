@@ -22,11 +22,15 @@ export const findUser = async (clerkId: string) => {
   });
 };
 
-export const createUser = async (user: {
-  clerkId: string;
-  firstName: string;
-  lastName: string;
-}) => {
+export const getUsers = async () => {
+  return await client.user.findMany({
+    include: {
+      orders: true,
+    },
+  });
+};
+
+export const createUser = async (user: { clerkId: string; firstName: string; lastName: string }) => {
   return await client.user.create({
     data: user,
   });

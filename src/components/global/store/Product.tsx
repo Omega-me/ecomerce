@@ -1,37 +1,68 @@
 /* eslint-disable @next/next/no-img-element */
+'use client';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ShoppingCart } from 'lucide-react';
+import { useUser } from '@clerk/nextjs';
+import { useOrderItemMutation, useUserInfoQuery } from '@/hooks';
+import { OrderItem, Product as ProductProps } from '@prisma/client';
+import Loader from '../loader';
 
 interface Props {
-  name: string;
-  description: string | null;
-  image: string;
-  price: number;
-  stock: number;
+  product: ProductProps;
 }
 
 const Product = (props: Props) => {
+  const { isSignedIn } = useUser();
+  const { data: user } = useUserInfoQuery();
+  const { mutate: addToCart, isPending } = useOrderItemMutation();
+
   return (
     <Card className="w-[350px]">
       <CardHeader>
-        <CardTitle>{props.name}</CardTitle>
-        <CardDescription>{props.description}</CardDescription>
+        <CardTitle>{props.product.name}</CardTitle>
+        <CardDescription>{props.product.description}</CardDescription>
       </CardHeader>
       <CardContent>
         <div>
-          <img src={props.image === '' ? 'https://placehold.co/600x400' : props.image} alt="product image" />
+          <img
+            src={
+              !props?.product?.image || props?.product?.image.trim() === ''
+                ? 'https://placehold.co/600x400/EFE6DD/7A7A7A/png?text=Skincare+Produc'
+                : (props.product?.image as string)
+            }
+            alt="product image"
+          />
         </div>
       </CardContent>
       <CardFooter className="flex justify-between">
         <div className="flex gap-x-2">
-          <div>{props.stock === 0 ? 'Out of stock' : `${props.stock} pieces`}</div>/<div>{`${props.price} $`}</div>
+          <div>{props.product.stock === 0 ? 'Out of stock' : `${props.product.stock} pieces`}</div>/<div>{`${props.product.price} $`}</div>
         </div>
-        <Button className="cursor-pointer">
-          <ShoppingCart />
-          Add
-        </Button>
+        {isSignedIn ? (
+          <Button
+            onClick={() =>
+              addToCart({
+                productId: props.product.id,
+                price: props.product.price,
+                quantity: 1,
+                userId: user?.data?.id,
+              } as OrderItem)
+            }
+            className="cursor-pointer"
+          >
+            <Loader state={isPending}>
+              <ShoppingCart />
+            </Loader>
+            Add
+          </Button>
+        ) : (
+          <Button disabled className="cursor-pointer">
+            <ShoppingCart />
+            Login to buy
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );
