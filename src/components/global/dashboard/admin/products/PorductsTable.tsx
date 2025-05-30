@@ -37,8 +37,20 @@ const PorductsTable = () => {
       header: "Name",
       accessor: "name",
     },
-    { header: "Description", accessor: "description" },
-    { header: "Image Url", accessor: "image" },
+    {
+      header: "Description",
+      accessor: "description",
+      render: (_value: any, row: any) => (
+        <p className="truncate w-48">{row.description}</p>
+      ),
+    },
+    {
+      header: "Image Url",
+      accessor: "image",
+      render: (_value: any, row: any) => (
+        <p className="truncate w-48">{row.image}</p>
+      ),
+    },
     { header: "Price", accessor: "price" },
     { header: "Stock", accessor: "stock" },
     {

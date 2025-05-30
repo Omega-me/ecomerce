@@ -56,7 +56,7 @@ export const Navbar = () => {
   };
 
   return (
-    <NavigationMenu className="w-full p-2.5 shadow-2xl sticky top-0 mb-5">
+    <NavigationMenu className="w-full p-2.5 sheadow-2xl sticky top-0 mb-5">
       <NavigationMenuList className="flex w-[100vw] items-center justify-between">
         <div className="flex items-center ml-4 gap-x-2">
           <div>

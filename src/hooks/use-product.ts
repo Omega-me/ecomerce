@@ -65,7 +65,7 @@ const useProduct = (id?: number) => {
         !productFormData.image || productFormData.image.trim() === ""
           ? null
           : productFormData.image,
-      price: Number(productFormData.price.toFixed(2)),
+      price: Number(productFormData.price),
       stock: Number(productFormData.stock),
       id,
     };
