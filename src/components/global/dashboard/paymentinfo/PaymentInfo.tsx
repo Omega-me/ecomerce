@@ -1,10 +1,10 @@
-import Loader from '@/components/global/loader';
-import { Button } from '@/components/ui/button';
-import usePaymentInfo from '@/hooks/use-paymentInfo';
-import { OrderItem, Payment, Shipment, User } from '@prisma/client';
-import { CreditCard } from 'lucide-react';
-import React from 'react';
-import PayPalButton from '../../paypalbutton/PaypalButton';
+import Loader from "@/components/global/loader";
+import { Button } from "@/components/ui/button";
+import usePaymentInfo from "@/hooks/use-paymentInfo";
+import { OrderItem, Payment, Shipment, User } from "@prisma/client";
+import { CreditCard } from "lucide-react";
+import React from "react";
+import PayPalButton from "../../paypalbutton/PaypalButton";
 
 interface Props {
   orderId: number;
@@ -12,14 +12,21 @@ interface Props {
 }
 
 const PaymentInfo = (props: Props) => {
-  const { handleCheckout, isPending, order, orderPending } = usePaymentInfo(props.orderId);
+  const { handleCheckout, isPending, order, orderPending } = usePaymentInfo(
+    props.orderId
+  );
   const payment = (order as unknown as { payment: Payment })?.payment;
-  const shippingAddress = (order as unknown as { shipment: Shipment | null })?.shipment;
+  const shippingAddress = (order as unknown as { shipment: Shipment | null })
+    ?.shipment;
   const items = (order as unknown as { orderItems: OrderItem[] })?.orderItems;
   const user = (order as unknown as { user: User })?.user;
 
   const renderPaymentInfoAlert = () => {
-    return !payment ? <h1 className="text-red-500">No payment</h1> : <h1 className="text-green-500">Paid</h1>;
+    return !payment ? (
+      <h1 className="text-red-500">No payment</h1>
+    ) : (
+      <h1 className="text-green-500">Paid</h1>
+    );
   };
 
   const renderShipmentInfoAlert = () => {
@@ -52,7 +59,7 @@ const PaymentInfo = (props: Props) => {
           </div>
           <div className="flex">
             <p>Total amount:</p>
-            <b>{order?.total}$</b>
+            <b>{order?.total.toFixed(2)}$</b>
           </div>
           <div>
             <hr />
@@ -67,7 +74,7 @@ const PaymentInfo = (props: Props) => {
                 </div>
                 <div className="flex">
                   <p>Price:</p>
-                  <b>{item.price}$</b>
+                  <b>{item.price.toFixed(2)}$</b>
                 </div>
                 <div className="flex">
                   <p>Quantity:</p>
@@ -94,7 +101,7 @@ const PaymentInfo = (props: Props) => {
               </div>
               <div className="flex">
                 <p>Amount paid:</p>
-                <b>{payment?.amount}$</b>
+                <b>{payment?.amount.toFixed(2)}$</b>
               </div>
               <div className="flex">
                 <p>Payment methode:</p>
@@ -125,21 +132,27 @@ const PaymentInfo = (props: Props) => {
               onClick={() =>
                 handleCheckout({
                   name: `Order ${order?.id}`,
-                  price: order?.total as number,
+                  price: Number(order?.total.toFixed(2)),
                 })
               }
               className="w-full mt-5 cursor-pointer"
-              disabled={(shippingAddress === null || order?.status) !== 'PENDING'}
+              disabled={
+                (shippingAddress === null || order?.status) !== "PENDING"
+              }
             >
-              {order?.status === 'PENDING' && (
+              {order?.status === "PENDING" && (
                 <Loader state={isPending}>
                   <CreditCard />
                 </Loader>
               )}
-              {shippingAddress === null ? 'Missing shipping address' : order?.status === 'PENDING' ? 'Pay' : `Order is ${order?.status}`}
+              {shippingAddress === null
+                ? "Missing shipping address"
+                : order?.status === "PENDING"
+                ? "Pay"
+                : `Order is ${order?.status}`}
             </Button>
             <PayPalButton
-              hide={(shippingAddress === null || order?.status) !== 'PENDING'}
+              hide={(shippingAddress === null || order?.status) !== "PENDING"}
               orderId={order?.id as number}
               amount={(order?.total as number)?.toFixed(2)}
             />

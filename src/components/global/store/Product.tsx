@@ -1,13 +1,20 @@
 /* eslint-disable @next/next/no-img-element */
-'use client';
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { ShoppingCart } from 'lucide-react';
-import { useUser } from '@clerk/nextjs';
-import { useOrderItemMutation, useUserInfoQuery } from '@/hooks';
-import { OrderItem, Product as ProductProps } from '@prisma/client';
-import Loader from '../loader';
+"use client";
+import React from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ShoppingCart } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
+import { useOrderItemMutation, useUserInfoQuery } from "@/hooks";
+import { OrderItem, Product as ProductProps } from "@prisma/client";
+import Loader from "../loader";
 
 interface Props {
   product: ProductProps;
@@ -28,8 +35,8 @@ const Product = (props: Props) => {
         <div>
           <img
             src={
-              !props?.product?.image || props?.product?.image.trim() === ''
-                ? 'https://placehold.co/600x400/EFE6DD/7A7A7A/png?text=Skincare+Produc'
+              !props?.product?.image || props?.product?.image.trim() === ""
+                ? "https://placehold.co/600x400/EFE6DD/7A7A7A/png?text=Skincare+Produc"
                 : (props.product?.image as string)
             }
             alt="product image"
@@ -38,14 +45,19 @@ const Product = (props: Props) => {
       </CardContent>
       <CardFooter className="flex justify-between">
         <div className="flex gap-x-2">
-          <div>{props.product.stock === 0 ? 'Out of stock' : `${props.product.stock} pieces`}</div>/<div>{`${props.product.price} $`}</div>
+          <div>
+            {props.product.stock === 0
+              ? "Out of stock"
+              : `${props.product.stock} pieces`}
+          </div>
+          /<div>{`${props.product.price.toFixed(2)} $`}</div>
         </div>
         {isSignedIn ? (
           <Button
             onClick={() =>
               addToCart({
                 productId: props.product.id,
-                price: props.product.price,
+                price: Number(props.product.price.toFixed(2)),
                 quantity: 1,
                 userId: user?.data?.id,
               } as OrderItem)

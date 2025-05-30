@@ -1,16 +1,16 @@
-import { client } from '@/common/lib';
-import { Order, OrderItem } from '@prisma/client';
+import { client } from "@/common/lib";
+import { Order, OrderItem } from "@prisma/client";
 
 export const getOrderItems = async (userId?: number) => {
   const where = userId ? { userId } : undefined;
 
-  return client.orderItem.findMany({
+  return await client.orderItem.findMany({
     where: {
       ...where,
       orderId: null,
     },
     orderBy: {
-      createdAt: 'desc',
+      createdAt: "desc",
     },
     include: {
       product: true,
@@ -18,13 +18,16 @@ export const getOrderItems = async (userId?: number) => {
   });
 };
 
-export const attachOrderItemsToOrder = async (userId: number, orderId: number) => {
+export const attachOrderItemsToOrder = async (
+  userId: number,
+  orderId: number
+) => {
   const where = {
     ...(userId ? { userId } : {}),
     orderId: null,
   };
 
-  return client.orderItem.updateMany({
+  return await client.orderItem.updateMany({
     where,
     data: {
       orderId,
@@ -49,7 +52,7 @@ export const getOrderTotalPrice = async (userId: number) => {
 };
 
 export const getOrderItem = async (id: number) => {
-  return client.orderItem.findUnique({
+  return await client.orderItem.findUnique({
     where: {
       id,
     },
@@ -60,7 +63,7 @@ export const getOrderItem = async (id: number) => {
 };
 
 export const createOrderItem = async (orderItem: OrderItem) => {
-  return client.orderItem.create({
+  return await client.orderItem.create({
     data: orderItem,
   });
 };
@@ -107,14 +110,17 @@ export const deleteOrderItem = async (id: number) => {
   });
 };
 
-export const changeQuantityOrderItem = async (id: number, increment: boolean) => {
+export const changeQuantityOrderItem = async (
+  id: number,
+  increment: boolean
+) => {
   return client.orderItem.update({
     where: {
       id,
     },
     data: {
       quantity: {
-        [increment ? 'increment' : 'decrement']: 1,
+        [increment ? "increment" : "decrement"]: 1,
       },
     },
   });

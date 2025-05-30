@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useProductQuery } from './useQueries';
-import { Product } from '@prisma/client';
-import { useProductMutation } from './useMutation';
+import { useEffect, useState } from "react";
+import { useProductQuery } from "./useQueries";
+import { Product } from "@prisma/client";
+import { useProductMutation } from "./useMutation";
 
 const useProduct = (id?: number) => {
   const { data: product, isPending } = useProductQuery(id);
-  const { mutate: saveProduct, isPending: savingProduct } = useProductMutation();
+  const { mutate: saveProduct, isPending: savingProduct } =
+    useProductMutation();
   const [productFormData, setProductFormData] = useState<{
     name: string;
     description: string | null;
@@ -14,9 +15,9 @@ const useProduct = (id?: number) => {
     stock: number;
     isActive: boolean;
   }>({
-    name: '',
+    name: "",
     description: null,
-    image: '',
+    image: "",
     price: 0,
     stock: 1,
     isActive: true,
@@ -28,7 +29,7 @@ const useProduct = (id?: number) => {
         name: (product?.data as Product)?.name,
         description: (product?.data as Product)?.description,
         image: (product?.data as Product)?.image,
-        price: (product?.data as Product)?.price,
+        price: Number((product?.data as Product)?.price.toFixed(2)),
         stock: (product?.data as Product)?.stock,
         isActive: (product?.data as Product)?.isActive,
       });
@@ -55,9 +56,16 @@ const useProduct = (id?: number) => {
 
     const payload = {
       ...productFormData,
-      description: !productFormData.description || productFormData.description.trim() === '' ? null : productFormData.description,
-      image: !productFormData.image || productFormData.image.trim() === '' ? null : productFormData.image,
-      price: Number(productFormData.price),
+      description:
+        !productFormData.description ||
+        productFormData.description.trim() === ""
+          ? null
+          : productFormData.description,
+      image:
+        !productFormData.image || productFormData.image.trim() === ""
+          ? null
+          : productFormData.image,
+      price: Number(productFormData.price.toFixed(2)),
       stock: Number(productFormData.stock),
       id,
     };
@@ -65,7 +73,14 @@ const useProduct = (id?: number) => {
     saveProduct(payload as Product);
   };
 
-  return { productFormData, handleChangeShipment, handleSaveProduct, isPending, handleChangeActiveProduct, savingProduct };
+  return {
+    productFormData,
+    handleChangeShipment,
+    handleSaveProduct,
+    isPending,
+    handleChangeActiveProduct,
+    savingProduct,
+  };
 };
 
 export default useProduct;
