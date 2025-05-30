@@ -138,7 +138,11 @@ const PaymentInfo = (props: Props) => {
               )}
               {shippingAddress === null ? 'Missing shipping address' : order?.status === 'PENDING' ? 'Pay' : `Order is ${order?.status}`}
             </Button>
-            <PayPalButton hide={(shippingAddress === null || order?.status) !== 'PENDING'} orderId={order?.id as number} amount={`${order?.total}`} />
+            <PayPalButton
+              hide={(shippingAddress === null || order?.status) !== 'PENDING'}
+              orderId={order?.id as number}
+              amount={(order?.total as number)?.toFixed(2)}
+            />
           </>
         )}
       </div>
