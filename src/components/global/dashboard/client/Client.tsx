@@ -1,5 +1,5 @@
-import React from 'react';
-import OrderTable from '../ordertable/OrderTable';
+import React from "react";
+import OrderTable from "../ordertable/OrderTable";
 
 const Client = () => {
   return <OrderTable />;

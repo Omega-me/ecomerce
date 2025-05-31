@@ -15,6 +15,11 @@ import { useUser } from "@clerk/nextjs";
 import { useOrderItemMutation, useUserInfoQuery } from "@/hooks";
 import { OrderItem, Product as ProductProps } from "@prisma/client";
 import Loader from "../loader";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Props {
   product: ProductProps;
@@ -29,7 +34,20 @@ const Product = (props: Props) => {
     <Card className="w-[350px]">
       <CardHeader>
         <CardTitle>{props.product.name}</CardTitle>
-        <CardDescription>{props.product.description}</CardDescription>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <CardDescription>
+              <div className="truncate w-[300px] cursor-pointer">
+                {props.product.description}
+              </div>
+            </CardDescription>
+          </TooltipTrigger>
+          <TooltipContent>
+            <div className="w-[350px] text-[14px] cursor-pointer">
+              <p>{props.product.description}</p>
+            </div>
+          </TooltipContent>
+        </Tooltip>
       </CardHeader>
       <CardContent>
         <div>

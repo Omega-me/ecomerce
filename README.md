@@ -1,3 +1,29 @@
+# credit card "stripe" payment
+
+- number => 42424242424242424
+
+- date => 06/2030 or any valid date in the future
+
+- secure number => Any 3 digits
+
+# "paypal" payment
+
+- email => sb-0ebdj29932470@business.example.com
+
+- password => PM)\*Abg1
+
+# credit card "paypal" payment
+
+- number => 4032031156917915
+
+- date => 06/2030
+
+- secure number => Any 3 digits
+
+# start app using bun start command
+
+# start db UI on web using bun db command
+
 # 📊 Prisma Schema Analysis
 
 ## This document provides a detailed analysis of the Prisma schema used in your project. It outlines the database design and relationships
